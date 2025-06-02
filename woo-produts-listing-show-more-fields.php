@@ -15,8 +15,8 @@ Text Domain: woo-produts-listing-show-more-fields
 function woo_produts_listing_show_more_fields_admin_menu() {
     add_submenu_page(
         'woocommerce',
-        __('Product List Extra Fields', 'woo-produts-listing-show-more-fields'),
-        __('Product List Extra Fields', 'woo-produts-listing-show-more-fields'),
+        __('Product List Extra Fields Settings', 'woo-produts-listing-show-more-fields'),
+        __('Product List Extra Fields Settings', 'woo-produts-listing-show-more-fields'),
         'manage_woocommerce',
         'woo-produts-listing-show-more-fields',
         'woo_produts_listing_show_more_fields_settings_page'
