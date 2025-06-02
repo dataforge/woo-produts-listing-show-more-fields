@@ -9,6 +9,10 @@ GitHub Plugin URI: https://github.com/dataforge/woo-produts-listing-show-more-fi
 Text Domain: woo-produts-listing-show-more-fields
 */
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 /**
  * Add settings submenu under WooCommerce
  */
