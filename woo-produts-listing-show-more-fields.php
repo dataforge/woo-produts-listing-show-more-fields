@@ -161,29 +161,84 @@ function woo_produts_listing_show_more_fields_column_content($column, $product_i
                 foreach ($variations as $variation_id) {
                     $variation = wc_get_product($variation_id);
                     if ($variation) {
-                        $variation_skus[] = $variation->get_sku();
+                        $sku = $variation->get_sku();
+                        if ($sku) {
+                            $variation_skus[] = $sku;
+                        }
                     }
                 }
                 if (!empty($variation_skus)) {
                     $sku_list = implode(', ', $variation_skus);
-                    $display = mb_strimwidth($sku_list, 0, 50, '...');
+                    $display = mb_strimwidth($sku_list, 0, 100, '...');
                     echo '<span title="' . esc_attr($sku_list) . '">' . esc_html($display) . '</span>';
                 } else {
-                    echo 'N/A';
+                    echo '<span style="color:#a00;">No SKUs found for variations</span>';
                 }
             } else {
                 $sku = $product->get_sku();
-                echo $sku ? esc_html($sku) : 'N/A';
+                echo $sku ? esc_html($sku) : '<span style="color:#a00;">No SKU set</span>';
             }
             break;
         case 'woo_plsmf_price':
-            echo $product->get_price_html() ? $product->get_price_html() : 'N/A';
+            if ($product->is_type('variable')) {
+                $variations = $product->get_children();
+                $prices = array();
+                foreach ($variations as $variation_id) {
+                    $variation = wc_get_product($variation_id);
+                    if ($variation && $variation->get_price() !== '') {
+                        $prices[] = floatval($variation->get_price());
+                    }
+                }
+                if (!empty($prices)) {
+                    $min = min($prices);
+                    $max = max($prices);
+                    if ($min === $max) {
+                        echo wc_price($min);
+                    } else {
+                        echo wc_price($min) . ' - ' . wc_price($max);
+                    }
+                } else {
+                    echo '<span style="color:#a00;">No prices set for variations</span>';
+                }
+            } else {
+                echo $product->get_price_html() ? $product->get_price_html() : '<span style="color:#a00;">No price set</span>';
+            }
             break;
         case 'woo_plsmf_stock':
-            if ($product->is_in_stock()) {
-                echo esc_html($product->get_stock_quantity() !== null ? $product->get_stock_quantity() : __('In stock', 'woo-produts-listing-show-more-fields'));
+            if ($product->is_type('variable')) {
+                $variations = $product->get_children();
+                $total_stock = 0;
+                $in_stock_count = 0;
+                $out_stock_count = 0;
+                foreach ($variations as $variation_id) {
+                    $variation = wc_get_product($variation_id);
+                    if ($variation) {
+                        if ($variation->is_in_stock()) {
+                            $in_stock_count++;
+                            $qty = $variation->get_stock_quantity();
+                            if ($qty !== null) {
+                                $total_stock += $qty;
+                            }
+                        } else {
+                            $out_stock_count++;
+                        }
+                    }
+                }
+                if ($in_stock_count && $out_stock_count) {
+                    echo '<span style="color:#e67e22;">Mixed stock status</span>';
+                } elseif ($in_stock_count) {
+                    echo esc_html($total_stock) . ' (' . esc_html__('In stock', 'woo-produts-listing-show-more-fields') . ')';
+                } elseif ($out_stock_count) {
+                    echo esc_html__('Out of stock', 'woo-produts-listing-show-more-fields');
+                } else {
+                    echo '<span style="color:#a00;">No stock info for variations</span>';
+                }
             } else {
-                echo esc_html__('Out of stock', 'woo-produts-listing-show-more-fields');
+                if ($product->is_in_stock()) {
+                    echo esc_html($product->get_stock_quantity() !== null ? $product->get_stock_quantity() : __('In stock', 'woo-produts-listing-show-more-fields'));
+                } else {
+                    echo esc_html__('Out of stock', 'woo-produts-listing-show-more-fields');
+                }
             }
             break;
         case 'woo_plsmf_type':
