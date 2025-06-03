@@ -81,7 +81,7 @@ function woo_produts_listing_show_more_fields_settings_page() {
             <?php wp_nonce_field('woo_produts_listing_show_more_fields_save'); ?>
             <table class="form-table">
                 <tr>
-                    <th scope="row"><?php esc_html_e('Select fields to display in product list:', 'woo-produts-listing-show-more-fields'); ?></th>
+<th scope="row"><?php esc_html_e('Select fields to display for product variants in the product list:', 'woo-produts-listing-show-more-fields'); ?></th>
                     <td>
                         <?php foreach ($fields as $key => $label): ?>
                             <label>
