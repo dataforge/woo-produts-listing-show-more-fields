@@ -156,23 +156,64 @@ function woo_produts_listing_show_more_fields_column_content($column, $product_i
     switch ($column) {
         case 'woo_plsmf_sku':
             if ($product->is_type('variable')) {
-                $variation_skus = array();
+                // Show parent SKU
+                $parent_sku = $product->get_sku();
+                echo $parent_sku ? '<strong>' . esc_html($parent_sku) . '</strong>' : '<span style="color:#a00;">No SKU set</span>';
+
+                // Get all variations
                 $variations = $product->get_children();
-                foreach ($variations as $variation_id) {
-                    $variation = wc_get_product($variation_id);
-                    if ($variation) {
+                if (!empty($variations)) {
+                    // Output a table of variant data
+                    echo '<div style="margin-top:8px;"><table class="wp-list-table widefat fixed striped" style="background:#f9f9f9;">';
+                    echo '<thead><tr>';
+                    echo '<th>' . esc_html__('Image', 'woo-produts-listing-show-more-fields') . '</th>';
+                    echo '<th>' . esc_html__('SKU', 'woo-produts-listing-show-more-fields') . '</th>';
+                    echo '<th>' . esc_html__('Stock', 'woo-produts-listing-show-more-fields') . '</th>';
+                    echo '<th>' . esc_html__('Price', 'woo-produts-listing-show-more-fields') . '</th>';
+                    echo '<th>' . esc_html__('Categories', 'woo-produts-listing-show-more-fields') . '</th>';
+                    echo '<th>' . esc_html__('Tags', 'woo-produts-listing-show-more-fields') . '</th>';
+                    echo '<th>' . esc_html__('Brands', 'woo-produts-listing-show-more-fields') . '</th>';
+                    echo '<th>' . esc_html__('Featured', 'woo-produts-listing-show-more-fields') . '</th>';
+                    echo '<th>' . esc_html__('Date', 'woo-produts-listing-show-more-fields') . '</th>';
+                    echo '</tr></thead><tbody>';
+                    foreach ($variations as $variation_id) {
+                        $variation = wc_get_product($variation_id);
+                        if (!$variation) continue;
+                        // Image
+                        $image_id = $variation->get_image_id();
+                        $image_html = $image_id ? wp_get_attachment_image($image_id, array(32,32)) : '';
+                        // SKU
                         $sku = $variation->get_sku();
-                        if ($sku) {
-                            $variation_skus[] = $sku;
-                        }
+                        // Stock
+                        $stock = $variation->is_in_stock() ? ($variation->get_stock_quantity() !== null ? $variation->get_stock_quantity() : __('In stock', 'woo-produts-listing-show-more-fields')) : __('Out of stock', 'woo-produts-listing-show-more-fields');
+                        // Price
+                        $price = $variation->get_price_html() ? $variation->get_price_html() : '<span style="color:#a00;">No price set</span>';
+                        // Categories
+                        $categories = get_the_term_list($variation_id, 'product_cat', '', ', ', '') ?: '';
+                        // Tags
+                        $tags = get_the_term_list($variation_id, 'product_tag', '', ', ', '') ?: '';
+                        // Brands (if using WooCommerce Brands)
+                        $brands = function_exists('get_the_term_list') ? get_the_term_list($variation_id, 'product_brand', '', ', ', '') : '';
+                        // Featured
+                        $featured = $variation->get_meta('_featured') === 'yes' ? __('Yes', 'woo-produts-listing-show-more-fields') : __('No', 'woo-produts-listing-show-more-fields');
+                        // Date
+                        $date = get_post_field('post_date', $variation_id);
+
+                        echo '<tr>';
+                        echo '<td>' . $image_html . '</td>';
+                        echo '<td>' . esc_html($sku) . '</td>';
+                        echo '<td>' . esc_html($stock) . '</td>';
+                        echo '<td>' . $price . '</td>';
+                        echo '<td>' . $categories . '</td>';
+                        echo '<td>' . $tags . '</td>';
+                        echo '<td>' . $brands . '</td>';
+                        echo '<td>' . $featured . '</td>';
+                        echo '<td>' . esc_html($date) . '</td>';
+                        echo '</tr>';
                     }
-                }
-                if (!empty($variation_skus)) {
-                    $sku_list = implode(', ', $variation_skus);
-                    $display = mb_strimwidth($sku_list, 0, 100, '...');
-                    echo '<span title="' . esc_attr($sku_list) . '">' . esc_html($display) . '</span>';
+                    echo '</tbody></table></div>';
                 } else {
-                    echo '<span style="color:#a00;">No SKUs found for variations</span>';
+                    echo '<div><span style="color:#a00;">No variations found</span></div>';
                 }
             } else {
                 $sku = $product->get_sku();
