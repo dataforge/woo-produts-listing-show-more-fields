@@ -109,15 +109,15 @@ function woo_produts_listing_show_more_fields_settings_page() {
  * Add variant sub-row under variable products in the product list
  */
 add_action('manage_product_posts_custom_column', function($column, $product_id) {
-    if ($column !== 'date') return;
+    if ($column !== 'name') return;
     $product = wc_get_product($product_id);
     if (!$product || !$product->is_type('variable')) return;
 
     $variations = $product->get_children();
     if (empty($variations)) return;
 
-    // Output a hidden div with variant data, to be moved by JS
-    echo '<div class="woo-plsmf-variant-row" data-product-id="' . esc_attr($product_id) . '" style="display:none;">';
+    // Output a visible div with variant data, to be moved by JS
+    echo '<div class="woo-plsmf-variant-row" data-product-id="' . esc_attr($product_id) . '">';
     echo '<div class="woo-plsmf-variant-grid" style="display:grid; grid-template-columns: repeat(9, auto); gap:4px; background:#f9f9f9; border:1px solid #e5e5e5; padding:8px; border-radius:4px;">';
     // Header row
     echo '<div style="font-weight:bold;">' . esc_html__('Image', 'woo-produts-listing-show-more-fields') . '</div>';
