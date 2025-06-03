@@ -19,8 +19,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 function woo_produts_listing_show_more_fields_admin_menu() {
     add_submenu_page(
         'woocommerce',
-        __('Woo Products Listing Show More Fields', 'woo-produts-listing-show-more-fields'),
-        __('Woo Products Listing Show More Fields', 'woo-produts-listing-show-more-fields'),
+        'Woo Products Listing Show More Fields', // Page title
+        'Woo Products Listing Show More Fields', // Menu title
         'manage_woocommerce',
         'woo-produts-listing-show-more-fields',
         'woo_produts_listing_show_more_fields_settings_page'
@@ -76,7 +76,7 @@ function woo_produts_listing_show_more_fields_settings_page() {
     }
     ?>
     <div class="wrap">
-        <h1><?php esc_html_e('Product List Extra Fields Settings', 'woo-produts-listing-show-more-fields'); ?></h1>
+        <h1>Woo Products Listing Show More Fields</h1>
         <form method="post">
             <?php wp_nonce_field('woo_produts_listing_show_more_fields_save'); ?>
             <table class="form-table">
@@ -94,10 +94,11 @@ function woo_produts_listing_show_more_fields_settings_page() {
             </table>
             <?php submit_button(__('Save Settings', 'woo-produts-listing-show-more-fields'), 'primary', 'woo_produts_listing_show_more_fields_save'); ?>
         </form>
+        <hr>
         <form method="post" style="margin-top:2em;">
             <?php wp_nonce_field('woo_produts_listing_show_more_fields_check_update_nonce', 'woo_produts_listing_show_more_fields_check_update_nonce'); ?>
             <input type="hidden" name="woo_produts_listing_show_more_fields_check_update" value="1">
-            <?php submit_button(__('Check for Plugin Updates', 'woo-produts-listing-show-more-fields'), 'secondary'); ?>
+            <?php submit_button('Check for Plugin Updates', 'secondary'); ?>
         </form>
     </div>
     <?php
