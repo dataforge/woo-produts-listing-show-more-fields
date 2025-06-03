@@ -164,19 +164,18 @@ function woo_produts_listing_show_more_fields_column_content($column, $product_i
                 // Get all variations
                 $variations = $product->get_children();
                 if (!empty($variations)) {
-                    // Output a table of variant data
-                    echo '<div style="margin-top:8px;"><table class="wp-list-table widefat fixed striped" style="background:#f9f9f9;">';
-                    echo '<thead><tr>';
-                    echo '<th>' . esc_html__('Image', 'woo-produts-listing-show-more-fields') . '</th>';
-                    echo '<th>' . esc_html__('SKU', 'woo-produts-listing-show-more-fields') . '</th>';
-                    echo '<th>' . esc_html__('Stock', 'woo-produts-listing-show-more-fields') . '</th>';
-                    echo '<th>' . esc_html__('Price', 'woo-produts-listing-show-more-fields') . '</th>';
-                    echo '<th>' . esc_html__('Categories', 'woo-produts-listing-show-more-fields') . '</th>';
-                    echo '<th>' . esc_html__('Tags', 'woo-produts-listing-show-more-fields') . '</th>';
-                    echo '<th>' . esc_html__('Brands', 'woo-produts-listing-show-more-fields') . '</th>';
-                    echo '<th>' . esc_html__('Featured', 'woo-produts-listing-show-more-fields') . '</th>';
-                    echo '<th>' . esc_html__('Date', 'woo-produts-listing-show-more-fields') . '</th>';
-                    echo '</tr></thead><tbody>';
+                    // Output variant data as a CSS grid for proper formatting
+                    echo '<div class="woo-plsmf-variant-grid" style="margin-top:8px; display:grid; grid-template-columns: repeat(9, auto); gap:4px; background:#f9f9f9; border:1px solid #e5e5e5; padding:8px; border-radius:4px;">';
+                    // Header row
+                    echo '<div style="font-weight:bold;">' . esc_html__('Image', 'woo-produts-listing-show-more-fields') . '</div>';
+                    echo '<div style="font-weight:bold;">' . esc_html__('SKU', 'woo-produts-listing-show-more-fields') . '</div>';
+                    echo '<div style="font-weight:bold;">' . esc_html__('Stock', 'woo-produts-listing-show-more-fields') . '</div>';
+                    echo '<div style="font-weight:bold;">' . esc_html__('Price', 'woo-produts-listing-show-more-fields') . '</div>';
+                    echo '<div style="font-weight:bold;">' . esc_html__('Categories', 'woo-produts-listing-show-more-fields') . '</div>';
+                    echo '<div style="font-weight:bold;">' . esc_html__('Tags', 'woo-produts-listing-show-more-fields') . '</div>';
+                    echo '<div style="font-weight:bold;">' . esc_html__('Brands', 'woo-produts-listing-show-more-fields') . '</div>';
+                    echo '<div style="font-weight:bold;">' . esc_html__('Featured', 'woo-produts-listing-show-more-fields') . '</div>';
+                    echo '<div style="font-weight:bold;">' . esc_html__('Date', 'woo-produts-listing-show-more-fields') . '</div>';
                     foreach ($variations as $variation_id) {
                         $variation = wc_get_product($variation_id);
                         if (!$variation) continue;
@@ -200,19 +199,17 @@ function woo_produts_listing_show_more_fields_column_content($column, $product_i
                         // Date
                         $date = get_post_field('post_date', $variation_id);
 
-                        echo '<tr>';
-                        echo '<td>' . $image_html . '</td>';
-                        echo '<td>' . esc_html($sku) . '</td>';
-                        echo '<td>' . esc_html($stock) . '</td>';
-                        echo '<td>' . $price . '</td>';
-                        echo '<td>' . $categories . '</td>';
-                        echo '<td>' . $tags . '</td>';
-                        echo '<td>' . $brands . '</td>';
-                        echo '<td>' . $featured . '</td>';
-                        echo '<td>' . esc_html($date) . '</td>';
-                        echo '</tr>';
+                        echo '<div>' . $image_html . '</div>';
+                        echo '<div>' . esc_html($sku) . '</div>';
+                        echo '<div>' . esc_html($stock) . '</div>';
+                        echo '<div>' . $price . '</div>';
+                        echo '<div>' . $categories . '</div>';
+                        echo '<div>' . $tags . '</div>';
+                        echo '<div>' . $brands . '</div>';
+                        echo '<div>' . $featured . '</div>';
+                        echo '<div>' . esc_html($date) . '</div>';
                     }
-                    echo '</tbody></table></div>';
+                    echo '</div>';
                 } else {
                     echo '<div><span style="color:#a00;">No variations found</span></div>';
                 }
