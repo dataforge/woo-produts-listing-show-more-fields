@@ -116,22 +116,7 @@ add_action('manage_product_posts_custom_column', function($column, $product_id) 
     $variations = $product->get_children();
     if (empty($variations)) return;
 
-    // Output a visible div with variant data, to be moved by JS
-    echo '<div class="woo-plsmf-variant-row" data-product-id="' . esc_attr($product_id) . '">';
-echo '<table class="wp-list-table widefat fixed striped table-view-list posts">';
-    // Header row
-    echo '<thead><tr>';
-    echo '<th>' . esc_html__('Image', 'woo-produts-listing-show-more-fields') . '</th>';
-    echo '<th>' . esc_html__('Name', 'woo-produts-listing-show-more-fields') . '</th>';
-    echo '<th>' . esc_html__('SKU', 'woo-produts-listing-show-more-fields') . '</th>';
-    echo '<th>' . esc_html__('Stock', 'woo-produts-listing-show-more-fields') . '</th>';
-    echo '<th>' . esc_html__('Price', 'woo-produts-listing-show-more-fields') . '</th>';
-    echo '<th>' . esc_html__('Categories', 'woo-produts-listing-show-more-fields') . '</th>';
-    echo '<th>' . esc_html__('Tags', 'woo-produts-listing-show-more-fields') . '</th>';
-    echo '<th>' . esc_html__('Brands', 'woo-produts-listing-show-more-fields') . '</th>';
-    echo '<th>' . esc_html__('Featured', 'woo-produts-listing-show-more-fields') . '</th>';
-    echo '<th>' . esc_html__('Date', 'woo-produts-listing-show-more-fields') . '</th>';
-    echo '</tr></thead><tbody>';
+    // Output each variant as a <tr> to be inserted after the parent product row
     foreach ($variations as $variation_id) {
         $variation = wc_get_product($variation_id);
         if (!$variation) continue;
@@ -157,20 +142,32 @@ echo '<table class="wp-list-table widefat fixed striped table-view-list posts">'
         // Date
         $date = get_post_field('post_date', $variation_id);
 
-        echo '<tr>';
-        echo '<td>' . $image_html . '</td>';
-        echo '<td>' . esc_html($name) . '</td>';
-        echo '<td>' . esc_html($sku) . '</td>';
-        echo '<td>' . esc_html($stock) . '</td>';
-        echo '<td>' . $price . '</td>';
-        echo '<td>' . $categories . '</td>';
-        echo '<td>' . $tags . '</td>';
-        echo '<td>' . $brands . '</td>';
-        echo '<td>' . $featured . '</td>';
-        echo '<td>' . esc_html($date) . '</td>';
+        // Output a <tr> with WooCommerce-like classes and data attributes
+        echo '<tr id="post-' . esc_attr($variation_id) . '" class="iedit level-1 post-' . esc_attr($variation_id) . ' type-product status-' . esc_attr($variation->get_status()) . ' is-variant">';
+        // Checkbox column (empty for variants)
+        echo '<th scope="row" class="check-column"></th>';
+        // Image
+        echo '<td class="thumb column-thumb" data-colname="Image">' . $image_html . '</td>';
+        // Name
+        echo '<td class="name column-name" data-colname="Name">' . esc_html($name) . '</td>';
+        // SKU
+        echo '<td class="sku column-sku" data-colname="SKU">' . esc_html($sku) . '</td>';
+        // Stock
+        echo '<td class="is_in_stock column-is_in_stock" data-colname="Stock">' . esc_html($stock) . '</td>';
+        // Price
+        echo '<td class="price column-price" data-colname="Price">' . $price . '</td>';
+        // Categories
+        echo '<td class="product_cat column-product_cat" data-colname="Categories">' . $categories . '</td>';
+        // Tags
+        echo '<td class="product_tag column-product_tag" data-colname="Tags">' . $tags . '</td>';
+        // Brands
+        echo '<td class="taxonomy-product_brand column-taxonomy-product_brand" data-colname="Brands">' . $brands . '</td>';
+        // Featured
+        echo '<td class="featured column-featured" data-colname="Featured">' . $featured . '</td>';
+        // Date
+        echo '<td class="date column-date" data-colname="Date">' . esc_html($date) . '</td>';
         echo '</tr>';
     }
-    echo '</tbody></table></div>';
 }, 100, 2);
 
 /**
