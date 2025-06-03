@@ -144,12 +144,15 @@ add_action('manage_product_posts_custom_column', function($column, $product_id) 
 
         // Output a <tr> with WooCommerce-like classes and data attributes
         echo '<tr id="post-' . esc_attr($variation_id) . '" class="iedit level-1 post-' . esc_attr($variation_id) . ' type-product status-' . esc_attr($variation->get_status()) . ' is-variant">';
-        // Checkbox column (empty for variants)
-        echo '<th scope="row" class="check-column"></th>';
+        // Checkbox column (disabled for variants)
+        echo '<th scope="row" class="check-column"><input type="checkbox" disabled /></th>';
         // Image
         echo '<td class="thumb column-thumb" data-colname="Image">' . $image_html . '</td>';
-        // Name
-        echo '<td class="name column-name" data-colname="Name">' . esc_html($name) . '</td>';
+        // Name (with WooCommerce markup)
+        $edit_link = get_edit_post_link($variation_id);
+        $row_title = esc_html($name);
+        $row_actions = ''; // Optionally, you can add row actions here if needed
+        echo '<td class="name column-name column-primary has-row-actions" data-colname="Name"><strong><a class="row-title" href="' . esc_url($edit_link) . '">' . $row_title . '</a></strong>' . $row_actions . '</td>';
         // SKU
         echo '<td class="sku column-sku" data-colname="SKU">' . esc_html($sku) . '</td>';
         // Stock
