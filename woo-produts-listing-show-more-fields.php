@@ -118,7 +118,7 @@ add_action('manage_product_posts_custom_column', function($column, $product_id) 
 
     // Output a visible div with variant data, to be moved by JS
     echo '<div class="woo-plsmf-variant-row" data-product-id="' . esc_attr($product_id) . '">';
-    echo '<table class="woo-plsmf-variant-table" style="width:100%; background:#f9f9f9; border:1px solid #e5e5e5; margin:8px 0; border-radius:4px; font-size:13px;">';
+echo '<table class="wp-list-table widefat fixed striped table-view-list posts">';
     // Header row
     echo '<thead><tr>';
     echo '<th>' . esc_html__('Image', 'woo-produts-listing-show-more-fields') . '</th>';
