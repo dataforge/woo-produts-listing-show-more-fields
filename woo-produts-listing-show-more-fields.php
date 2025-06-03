@@ -107,23 +107,39 @@ function woo_produts_listing_show_more_fields_settings_page() {
 // Add custom column header to product list table in admin
 function woo_produts_listing_show_more_fields_column_header($columns) {
     $fields = get_option('woo_produts_listing_show_more_fields_fields', array('sku'));
+    $custom_columns = array();
     foreach ($fields as $field) {
         switch ($field) {
             case 'sku':
-                $columns['woo_plsmf_sku'] = __('SKU', 'woo-produts-listing-show-more-fields');
+                $custom_columns['woo_plsmf_sku'] = __('SKU', 'woo-produts-listing-show-more-fields');
                 break;
             case 'price':
-                $columns['woo_plsmf_price'] = __('Price', 'woo-produts-listing-show-more-fields');
+                $custom_columns['woo_plsmf_price'] = __('Price', 'woo-produts-listing-show-more-fields');
                 break;
             case 'stock':
-                $columns['woo_plsmf_stock'] = __('Stock', 'woo-produts-listing-show-more-fields');
+                $custom_columns['woo_plsmf_stock'] = __('Stock', 'woo-produts-listing-show-more-fields');
                 break;
             case 'type':
-                $columns['woo_plsmf_type'] = __('Product Type', 'woo-produts-listing-show-more-fields');
+                $custom_columns['woo_plsmf_type'] = __('Product Type', 'woo-produts-listing-show-more-fields');
                 break;
         }
     }
-    return $columns;
+    // Insert custom columns before the 'product_actions' column if it exists
+    $new_columns = array();
+    foreach ($columns as $key => $value) {
+        if ($key === 'product_actions') {
+            // Insert custom columns before actions
+            foreach ($custom_columns as $ckey => $cval) {
+                $new_columns[$ckey] = $cval;
+            }
+        }
+        $new_columns[$key] = $value;
+    }
+    // If 'product_actions' not found, append custom columns at the end
+    if (empty($new_columns)) {
+        $new_columns = array_merge($columns, $custom_columns);
+    }
+    return $new_columns;
 }
 add_filter('manage_edit-product_columns', 'woo_produts_listing_show_more_fields_column_header', 20);
 
