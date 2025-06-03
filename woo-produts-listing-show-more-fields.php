@@ -111,7 +111,7 @@ function woo_produts_listing_show_more_fields_column_header($columns) {
     foreach ($fields as $field) {
         switch ($field) {
             case 'sku':
-                $custom_columns['woo_plsmf_sku'] = __('SKU', 'woo-produts-listing-show-more-fields');
+                $custom_columns['woo_plsmf_sku'] = __('SKU (Variants)', 'woo-produts-listing-show-more-fields');
                 break;
             case 'price':
                 $custom_columns['woo_plsmf_price'] = __('Price', 'woo-produts-listing-show-more-fields');
@@ -124,19 +124,20 @@ function woo_produts_listing_show_more_fields_column_header($columns) {
                 break;
         }
     }
-    // Insert custom columns before the 'product_actions' column if it exists
+    // Insert custom columns immediately after the checkbox column for visibility
     $new_columns = array();
+    $inserted = false;
     foreach ($columns as $key => $value) {
-        if ($key === 'product_actions') {
-            // Insert custom columns before actions
+        $new_columns[$key] = $value;
+        if (!$inserted && $key === 'cb') {
             foreach ($custom_columns as $ckey => $cval) {
                 $new_columns[$ckey] = $cval;
             }
+            $inserted = true;
         }
-        $new_columns[$key] = $value;
     }
-    // If 'product_actions' not found, append custom columns at the end
-    if (empty($new_columns)) {
+    // If 'cb' not found, append custom columns at the end
+    if (!$inserted) {
         $new_columns = array_merge($columns, $custom_columns);
     }
     return $new_columns;
