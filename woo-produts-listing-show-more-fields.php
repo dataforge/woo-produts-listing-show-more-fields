@@ -118,23 +118,28 @@ add_action('manage_product_posts_custom_column', function($column, $product_id) 
 
     // Output a visible div with variant data, to be moved by JS
     echo '<div class="woo-plsmf-variant-row" data-product-id="' . esc_attr($product_id) . '">';
-    echo '<div class="woo-plsmf-variant-grid" style="display:grid; grid-template-columns: repeat(9, auto); gap:4px; background:#f9f9f9; border:1px solid #e5e5e5; padding:8px; border-radius:4px;">';
+    echo '<table class="woo-plsmf-variant-table" style="width:100%; background:#f9f9f9; border:1px solid #e5e5e5; margin:8px 0; border-radius:4px; font-size:13px;">';
     // Header row
-    echo '<div style="font-weight:bold;">' . esc_html__('Image', 'woo-produts-listing-show-more-fields') . '</div>';
-    echo '<div style="font-weight:bold;">' . esc_html__('SKU', 'woo-produts-listing-show-more-fields') . '</div>';
-    echo '<div style="font-weight:bold;">' . esc_html__('Stock', 'woo-produts-listing-show-more-fields') . '</div>';
-    echo '<div style="font-weight:bold;">' . esc_html__('Price', 'woo-produts-listing-show-more-fields') . '</div>';
-    echo '<div style="font-weight:bold;">' . esc_html__('Categories', 'woo-produts-listing-show-more-fields') . '</div>';
-    echo '<div style="font-weight:bold;">' . esc_html__('Tags', 'woo-produts-listing-show-more-fields') . '</div>';
-    echo '<div style="font-weight:bold;">' . esc_html__('Brands', 'woo-produts-listing-show-more-fields') . '</div>';
-    echo '<div style="font-weight:bold;">' . esc_html__('Featured', 'woo-produts-listing-show-more-fields') . '</div>';
-    echo '<div style="font-weight:bold;">' . esc_html__('Date', 'woo-produts-listing-show-more-fields') . '</div>';
+    echo '<thead><tr>';
+    echo '<th>' . esc_html__('Image', 'woo-produts-listing-show-more-fields') . '</th>';
+    echo '<th>' . esc_html__('Name', 'woo-produts-listing-show-more-fields') . '</th>';
+    echo '<th>' . esc_html__('SKU', 'woo-produts-listing-show-more-fields') . '</th>';
+    echo '<th>' . esc_html__('Stock', 'woo-produts-listing-show-more-fields') . '</th>';
+    echo '<th>' . esc_html__('Price', 'woo-produts-listing-show-more-fields') . '</th>';
+    echo '<th>' . esc_html__('Categories', 'woo-produts-listing-show-more-fields') . '</th>';
+    echo '<th>' . esc_html__('Tags', 'woo-produts-listing-show-more-fields') . '</th>';
+    echo '<th>' . esc_html__('Brands', 'woo-produts-listing-show-more-fields') . '</th>';
+    echo '<th>' . esc_html__('Featured', 'woo-produts-listing-show-more-fields') . '</th>';
+    echo '<th>' . esc_html__('Date', 'woo-produts-listing-show-more-fields') . '</th>';
+    echo '</tr></thead><tbody>';
     foreach ($variations as $variation_id) {
         $variation = wc_get_product($variation_id);
         if (!$variation) continue;
         // Image
         $image_id = $variation->get_image_id();
         $image_html = $image_id ? wp_get_attachment_image($image_id, array(32,32)) : '';
+        // Name
+        $name = $variation->get_name();
         // SKU
         $sku = $variation->get_sku();
         // Stock
@@ -152,17 +157,20 @@ add_action('manage_product_posts_custom_column', function($column, $product_id) 
         // Date
         $date = get_post_field('post_date', $variation_id);
 
-        echo '<div>' . $image_html . '</div>';
-        echo '<div>' . esc_html($sku) . '</div>';
-        echo '<div>' . esc_html($stock) . '</div>';
-        echo '<div>' . $price . '</div>';
-        echo '<div>' . $categories . '</div>';
-        echo '<div>' . $tags . '</div>';
-        echo '<div>' . $brands . '</div>';
-        echo '<div>' . $featured . '</div>';
-        echo '<div>' . esc_html($date) . '</div>';
+        echo '<tr>';
+        echo '<td>' . $image_html . '</td>';
+        echo '<td>' . esc_html($name) . '</td>';
+        echo '<td>' . esc_html($sku) . '</td>';
+        echo '<td>' . esc_html($stock) . '</td>';
+        echo '<td>' . $price . '</td>';
+        echo '<td>' . $categories . '</td>';
+        echo '<td>' . $tags . '</td>';
+        echo '<td>' . $brands . '</td>';
+        echo '<td>' . $featured . '</td>';
+        echo '<td>' . esc_html($date) . '</td>';
+        echo '</tr>';
     }
-    echo '</div></div>';
+    echo '</tbody></table></div>';
 }, 100, 2);
 
 /**
