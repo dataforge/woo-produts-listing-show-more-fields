@@ -3,7 +3,7 @@
 Plugin Name: Woo Products Listing Show More Fields
 Plugin URI:        https://github.com/dataforge/woo-produts-listing-show-more-fields
 Description: Adds a custom column to the WooCommerce product list table in the admin to display various fields.
-Version: 1.10
+Version: 1.11
 Author: Dataforge
 GitHub Plugin URI: https://github.com/dataforge/woo-produts-listing-show-more-fields
 Text Domain: woo-produts-listing-show-more-fields
@@ -19,8 +19,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 function woo_produts_listing_show_more_fields_admin_menu() {
     add_submenu_page(
         'woocommerce',
-        __('Product List Extra Fields Settings', 'woo-produts-listing-show-more-fields'),
-        __('Product List Extra Fields Settings', 'woo-produts-listing-show-more-fields'),
+        __('Woo Products Listing Show More Fields', 'woo-produts-listing-show-more-fields'),
+        __('Woo Products Listing Show More Fields', 'woo-produts-listing-show-more-fields'),
         'manage_woocommerce',
         'woo-produts-listing-show-more-fields',
         'woo_produts_listing_show_more_fields_settings_page'
