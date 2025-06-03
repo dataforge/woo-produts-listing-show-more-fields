@@ -41,11 +41,38 @@ function woo_produts_listing_show_more_fields_settings_page() {
     );
     $selected = get_option('woo_produts_listing_show_more_fields_fields', array('sku'));
 
+    // Handle save settings
     if (isset($_POST['woo_produts_listing_show_more_fields_save'])) {
         check_admin_referer('woo_produts_listing_show_more_fields_save');
         $selected = isset($_POST['fields']) ? array_map('sanitize_text_field', $_POST['fields']) : array();
         update_option('woo_produts_listing_show_more_fields_fields', $selected);
         echo '<div class="updated"><p>' . esc_html__('Settings saved.', 'woo-produts-listing-show-more-fields') . '</p></div>';
+    }
+
+    // Handle "Check for Plugin Updates" button
+    if (isset($_POST['woo_produts_listing_show_more_fields_check_update']) && check_admin_referer('woo_produts_listing_show_more_fields_check_update_nonce', 'woo_produts_listing_show_more_fields_check_update_nonce')) {
+        // Simulate the cron event for plugin update check
+        do_action('wp_update_plugins');
+        if (function_exists('wp_clean_plugins_cache')) {
+            wp_clean_plugins_cache(true);
+        }
+        // Remove the update_plugins transient to force a check
+        delete_site_transient('update_plugins');
+        // Call the update check directly as well
+        if (function_exists('wp_update_plugins')) {
+            wp_update_plugins();
+        }
+        // Get update info
+        $plugin_file = plugin_basename(__FILE__);
+        $update_plugins = get_site_transient('update_plugins');
+        $update_msg = '';
+        if (isset($update_plugins->response) && isset($update_plugins->response[$plugin_file])) {
+            $new_version = $update_plugins->response[$plugin_file]->new_version;
+            $update_msg = '<div class="updated"><p>' . esc_html__('Update available: version ', 'woo-produts-listing-show-more-fields') . esc_html($new_version) . '.</p></div>';
+        } else {
+            $update_msg = '<div class="updated"><p>' . esc_html__('No update available for this plugin.', 'woo-produts-listing-show-more-fields') . '</p></div>';
+        }
+        echo $update_msg;
     }
     ?>
     <div class="wrap">
@@ -66,6 +93,11 @@ function woo_produts_listing_show_more_fields_settings_page() {
                 </tr>
             </table>
             <?php submit_button(__('Save Settings', 'woo-produts-listing-show-more-fields'), 'primary', 'woo_produts_listing_show_more_fields_save'); ?>
+        </form>
+        <form method="post" style="margin-top:2em;">
+            <?php wp_nonce_field('woo_produts_listing_show_more_fields_check_update_nonce', 'woo_produts_listing_show_more_fields_check_update_nonce'); ?>
+            <input type="hidden" name="woo_produts_listing_show_more_fields_check_update" value="1">
+            <?php submit_button(__('Check for Plugin Updates', 'woo-produts-listing-show-more-fields'), 'secondary'); ?>
         </form>
     </div>
     <?php
