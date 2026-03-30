@@ -3,15 +3,21 @@
 Plugin Name: Woo Products Listing Show More Fields
 Plugin URI:        https://github.com/dataforge/woo-produts-listing-show-more-fields
 Description: Adds a custom column to the WooCommerce product list table in the admin to display various fields.
-Version: 1.11
+Version: 1.12
 Author: Dataforge
-GitHub Plugin URI: https://github.com/dataforge/woo-produts-listing-show-more-fields
 Text Domain: woo-produts-listing-show-more-fields
+Update URI: https://github.com/dataforge/woo-produts-listing-show-more-fields
 */
+
+define( 'WOO_PLSMF_VERSION', '1.12' );
+define( 'WOO_PLSMF_FILE', __FILE__ );
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
+
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-updater.php';
+Woo_PLSMF_Updater::init();
 
 /**
  * Add settings submenu under WooCommerce
@@ -49,30 +55,8 @@ function woo_produts_listing_show_more_fields_settings_page() {
         echo '<div class="updated"><p>' . esc_html__('Settings saved.', 'woo-produts-listing-show-more-fields') . '</p></div>';
     }
 
-    // Handle "Check for Plugin Updates" button
-    if (isset($_POST['woo_produts_listing_show_more_fields_check_update']) && check_admin_referer('woo_produts_listing_show_more_fields_check_update_nonce', 'woo_produts_listing_show_more_fields_check_update_nonce')) {
-        // Simulate the cron event for plugin update check
-        do_action('wp_update_plugins');
-        if (function_exists('wp_clean_plugins_cache')) {
-            wp_clean_plugins_cache(true);
-        }
-        // Remove the update_plugins transient to force a check
-        delete_site_transient('update_plugins');
-        // Call the update check directly as well
-        if (function_exists('wp_update_plugins')) {
-            wp_update_plugins();
-        }
-        // Get update info
-        $plugin_file = plugin_basename(__FILE__);
-        $update_plugins = get_site_transient('update_plugins');
-        $update_msg = '';
-        if (isset($update_plugins->response) && isset($update_plugins->response[$plugin_file])) {
-            $new_version = $update_plugins->response[$plugin_file]->new_version;
-            $update_msg = '<div class="updated"><p>' . esc_html__('Update available: version ', 'woo-produts-listing-show-more-fields') . esc_html($new_version) . '.</p></div>';
-        } else {
-            $update_msg = '<div class="updated"><p>' . esc_html__('No update available for this plugin.', 'woo-produts-listing-show-more-fields') . '</p></div>';
-        }
-        echo $update_msg;
+    if ( isset( $_GET['update_check'] ) ) {
+        echo '<div class="updated"><p>' . esc_html__( 'Update check complete. If an update is available it will appear in Dashboard > Updates.', 'woo-produts-listing-show-more-fields' ) . '</p></div>';
     }
     ?>
     <div class="wrap">
@@ -95,10 +79,10 @@ function woo_produts_listing_show_more_fields_settings_page() {
             <?php submit_button(__('Save Settings', 'woo-produts-listing-show-more-fields'), 'primary', 'woo_produts_listing_show_more_fields_save'); ?>
         </form>
         <hr>
-        <form method="post" style="margin-top:2em;">
-            <?php wp_nonce_field('woo_produts_listing_show_more_fields_check_update_nonce', 'woo_produts_listing_show_more_fields_check_update_nonce'); ?>
-            <input type="hidden" name="woo_produts_listing_show_more_fields_check_update" value="1">
-            <?php submit_button('Check for Plugin Updates', 'secondary'); ?>
+        <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top:2em;">
+            <input type="hidden" name="action" value="woo_plsmf_check_updates" />
+            <?php wp_nonce_field( 'woo_plsmf_check_updates' ); ?>
+            <?php submit_button( 'Check for Plugin Updates', 'secondary' ); ?>
         </form>
     </div>
     <?php
