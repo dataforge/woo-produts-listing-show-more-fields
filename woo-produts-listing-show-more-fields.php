@@ -3,13 +3,13 @@
 Plugin Name: Woo Products Listing Show More Fields
 Plugin URI:        https://github.com/dataforge/woo-produts-listing-show-more-fields
 Description: Adds a custom column to the WooCommerce product list table in the admin to display various fields.
-Version: 1.12
+Version: 1.13
 Author: Dataforge
 Text Domain: woo-produts-listing-show-more-fields
 Update URI: https://github.com/dataforge/woo-produts-listing-show-more-fields
 */
 
-define( 'WOO_PLSMF_VERSION', '1.12' );
+define( 'WOO_PLSMF_VERSION', '1.13' );
 define( 'WOO_PLSMF_FILE', __FILE__ );
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -55,9 +55,6 @@ function woo_produts_listing_show_more_fields_settings_page() {
         echo '<div class="updated"><p>' . esc_html__('Settings saved.', 'woo-produts-listing-show-more-fields') . '</p></div>';
     }
 
-    if ( isset( $_GET['update_check'] ) ) {
-        echo '<div class="updated"><p>' . esc_html__( 'Update check complete. If an update is available it will appear in Dashboard > Updates.', 'woo-produts-listing-show-more-fields' ) . '</p></div>';
-    }
     ?>
     <div class="wrap">
         <h1>Woo Products Listing Show More Fields</h1>
@@ -78,12 +75,23 @@ function woo_produts_listing_show_more_fields_settings_page() {
             </table>
             <?php submit_button(__('Save Settings', 'woo-produts-listing-show-more-fields'), 'primary', 'woo_produts_listing_show_more_fields_save'); ?>
         </form>
-        <hr>
-        <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top:2em;">
-            <input type="hidden" name="action" value="woo_plsmf_check_updates" />
-            <?php wp_nonce_field( 'woo_plsmf_check_updates' ); ?>
-            <?php submit_button( 'Check for Plugin Updates', 'secondary' ); ?>
-        </form>
+        <div class="card" style="margin-top:2em;">
+            <h2>Plugin Updates</h2>
+            <p>Current version: <strong>v<?php echo esc_html( WOO_PLSMF_VERSION ); ?></strong>
+            <?php if ( isset( $_GET['update_check'] ) ) : ?>
+                <?php if ( Woo_PLSMF_Updater::is_update_available() ) : ?>
+                    &mdash; <span style="color:#b32d2e;">Update available!</span> <a href="<?php echo esc_url( admin_url( 'update-core.php' ) ); ?>">Go to Updates</a>
+                <?php else : ?>
+                    &mdash; <span style="color:#00a32a;">Up to date</span>
+                <?php endif; ?>
+            <?php endif; ?>
+            </p>
+            <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline;">
+                <input type="hidden" name="action" value="woo_plsmf_check_updates" />
+                <?php wp_nonce_field( 'woo_plsmf_check_updates' ); ?>
+                <button type="submit" class="button">Check for Updates</button>
+            </form>
+        </div>
     </div>
     <?php
 }
